@@ -2,6 +2,7 @@
     --height:400px
 }
 .container {
+    position: absolute;
     display: block;
     width: 500px;
     height: var(--height);
@@ -9,21 +10,24 @@
 }
 .content{
     float: left;
-    width: 300px;
+    width: 470px;
     height: var(--height);
     margin: 0 5px;
     overflow: hidden;
     scroll-behavior: smooth;
 }
 .scroll{
+    width: 20px;
     float: left;
     height: var(--height,400px);
     background-color: rgb(128, 122, 122);
+    position: relative;
 }
 
 .scroll-track{
-    width: 15px;
-    position: relative;
+    width: 22px;
+    height: 360px;
+    position: absolute;
     bottom: 45;
     background-color: firebrick;
 }
@@ -40,12 +44,13 @@
 
 .scroll-up{
     position: absolute;
-    bottom: 25px;
+    bottom: 20px;
     background-color: deeppink;
 }
 
 .scroll-down{
+    width: 22px;
     position: absolute;
-    bottom: 5px;
+    bottom:0px;
     background-color: deeppink;
 }
