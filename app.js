@@ -8,6 +8,7 @@ class ScrollBar{
         this.downArrow = document.querySelector('.scroll-down')
         this.upArrow = document.querySelector('.scroll-up')
         this.scrollThumb = document.querySelector('.scroll-thumb')
+        this.scroll = document.querySelector('.scroll')
     }
 
     setContentScrollTop(change){
@@ -29,6 +30,9 @@ class ScrollBar{
         this.upArrow.addEventListener('click',()=>this.setContentScrollTop(-200))
 
         this.setScrollThumbSize()
+        this.scrollThumb.addEventListener('click',(e)=>{
+            console.log('pageY ',e)
+        })
     }
 
 }

@@ -1,41 +1,51 @@
+:root{
+    --height:400px
+}
 .container {
     display: block;
     width: 500px;
-    height: 400px;
+    height: var(--height);
     background-color: azure;
 }
 .content{
     float: left;
     width: 300px;
-    height: 360px;
+    height: var(--height);
     margin: 0 5px;
     overflow: hidden;
     scroll-behavior: smooth;
 }
 .scroll{
     float: left;
-    height: 360px;
+    height: var(--height,400px);
     background-color: rgb(128, 122, 122);
 }
 
-.scroll-down{
-    position : sticky;
-    top: 335px;
-    background-color: deeppink;
-}
-.scroll-up{
+.scroll-track{
+    width: 15px;
     position: relative;
-    background-color: deeppink;
+    bottom: 45;
+    background-color: firebrick;
 }
 
 .scroll-thumb{
-    width: 8px;
+    width:10px;
     margin: 2px auto;
     background-color: coral;
 }
+
 .scroll-thumb:hover{
     background-color: rgb(45, 43, 180);
 }
-img{
-    display: block;
+
+.scroll-up{
+    position: absolute;
+    bottom: 25px;
+    background-color: deeppink;
+}
+
+.scroll-down{
+    position: absolute;
+    bottom: 5px;
+    background-color: deeppink;
 }
