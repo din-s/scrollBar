@@ -33,9 +33,12 @@
 }
 
 .scroll-thumb{
+    position: relative;
+    left:5px;
     width:10px;
-    margin: 2px auto;
+    top:50%;
     background-color: coral;
+    cursor: grab;
 }
 
 .scroll-thumb:hover{

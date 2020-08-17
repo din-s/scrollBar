@@ -1,81 +1,101 @@
 
 class ScrollBar{
-    constructor({scrollHeight,pageHeight,scrollPos=0}){
+    constructor({scrollHeight,pageHeight}){
         this.scrollHeight=scrollHeight
         this.pageHeight=pageHeight
-        this.scrollPos=scrollPos
         this.maxContentScrollTop=this.scrollHeight-this.pageHeight
         this.content = document.querySelector('.content')
         this.downArrow = document.querySelector('.scroll-down')
         this.upArrow = document.querySelector('.scroll-up')
         this.scrollThumb = document.querySelector('.scroll-thumb')
         this.scrollTrack = document.querySelector('.scroll-track')
-        this.mouseMove = false
         this.message = document.querySelector('.message')
+        this.scrollPos = 0
+        this.isMouseDown = false
     }
 
+    calcPercentage(){
+        // console.log(Math.round((this.content.scrollTop/ this.scrollHeight) * 100 ))
+        return Math.round((this.content.scrollTop/ this.scrollHeight) * 100 )
+    }
+    handleButtonAction(change){
+        this.setContentScrollTop(change)
+        this.setThumbPosition()
+        this.setMessage()
+    }
     setContentScrollTop(change){
-
     this.content.scrollTop+=change
-    this.scrollPos=(this.content.scrollTop /  this.scrollHeight)*this.pageHeight
-    this.setThumbPosition(this.scrollPos)
+    this.setThumbPosition()
     this.setMessage()
-    // console.log('contentScrollTop',this.content.scrollTop,'max scroll pos: ', this.maxContentScrollTop)
     }
 
-    setMessage(){
-        const percentage = Math.round((this.content.scrollTop / this.maxContentScrollTop)*100) || 20
+    setThumbPosition(parameter){
+        // console.log(this.scrollThumb.style.top)
+        let top;
+        if(!parameter){
+            const scrollTrackHeight = this.scrollTrack.clientHeight
+            top = Math.round(this.calcPercentage() * scrollTrackHeight / 100)
+        }else{
+            top =parameter
+        }
+        this.scrollThumb.style.top =`${top}px`
+    }
+
+setMessage(){
+        const percentage = this.calcPercentage()
         this.message.textContent=`${percentage}% of content`
     }
-    setThumbPosition(pos){
-        this.scrollThumb.style.marginTop =`${pos}px`
-    }
-
     setScrollThumbSize(){
         this.scrollThumb.style.height =String(parseInt((this.content.clientHeight/this.content.scrollHeight )* this.content.clientHeight))+'px'
     }
 
     listenScrollTrack(){
-        let [x1,y1,x2,y2]=[undefined,undefined,undefined,undefined]
+
+        let y1,y2;
         this.scrollTrack.addEventListener('mousedown',(e)=>{
-            this.mouseMove=true
-            x1,y1 = e.clientX,e.clientY
-            console.log('mouseDown',e.clientX,e.clientY)
+            e.preventDefault()
+            this.isMouseDown=true
+            y1 = e.pageY-this.scrollTrack.offsetTop
         })
 
-        // this.scrollTrack.addEventListener('mouseout',(e)=>{
-        //     console.log('bhar ho gya..hehe')
-        // })
-        this.scrollTrack.addEventListener('mouseup',(e)=>{
-            console.log('mouseUp',e.clientX,e.clientY)
-            if(this.mouseMove){ 
-                x2,y2 = e.clientX,e.clientY
-                const dist = y2 - y1
-                this.setContentScrollTop(dist*this.pageHeight)
-                // console.log('Ha isi par mouse up and down hua')
-            }else{
-                // console.log('Nahi is parr nhi hua..')
-            }
-            this.mouseMove=false            
+        this.scrollTrack.addEventListener('mouseleave',()=>{
+            this.isMouseDown = false 
         })
-
-
+        this.scrollTrack.addEventListener('mouseup',()=>{
+            this.isMouseDown = false 
+        })
+       
+        this.scrollTrack.addEventListener('mousemove', (e)=>{
+                e.preventDefault()
+                if(this.isMouseDown){
+                    y2 = e.pageY - this.scrollTrack.offsetTop
+                    console.log({y2,y1})
+                    const delta = y2-y1
+                    this.scrollThumb.style.top =`${y2}px`
+                    this.setContentScrollTop(delta*3)
+                }
+            })
     }
 
     init(){
-        this.downArrow.addEventListener('click',()=>this.setContentScrollTop(+200))
+        
+        console.log('height',this.scrollTrack.clientHeight)
+        this.downArrow.addEventListener('click',()=>this.handleButtonAction(+200))
 
-        this.upArrow.addEventListener('click',()=>this.setContentScrollTop(-200))
+        this.upArrow.addEventListener('click',()=>this.handleButtonAction(-200))
 
         this.setThumbPosition(this.scrollPos)
 
         this.setScrollThumbSize()
 
         this.listenScrollTrack()
+
         this.content.addEventListener('wheel',(e)=>{
             this.setContentScrollTop(e.deltaY)
         })
+
         this.setMessage()
+
       
     }
 
@@ -84,8 +104,7 @@ class ScrollBar{
 const content = document.querySelector('.content')
 const initValues ={
     scrollHeight: content.scrollHeight,
-    pageHeight: content.clientHeight,
-    scrollPos:content.scrollTop
+    pageHeight: content.clientHeight
 }
 
 const scrollBar = new ScrollBar(initValues)
