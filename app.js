@@ -20,8 +20,6 @@ class ScrollBar {
     }
     handleButtonAction(change) {
         this.setContentScrollTop(change)
-        this.setThumbPosition()
-        this.setMessage()
     }
     setContentScrollTop(change) {
         this.content.scrollTop += change
@@ -52,24 +50,14 @@ class ScrollBar {
     listenScrollTrack() {
 
         let y1, y2; 
-        //for mouse Events
-        this.scrollTrack.addEventListener('mousedown', (e) => {
+        const handleMouseDown = (e) => {
             e.preventDefault()
             this.isMouseDown = true
             y1 = e.pageY - this.scrollTrack.offsetTop
             console.log('down')
-        })
+        }
 
-        this.scrollTrack.addEventListener('mouseleave' , () => {
-            console.log('leave')
-            this.isMouseDown = false
-        })
-        this.scrollTrack.addEventListener('mouseup', () => {
-            console.log('up')
-            this.isMouseDown = false
-        })
-
-        this.scrollTrack.addEventListener('mousemove' , (e) => {
+        const handleMouseMove = (e) => {
             console.log('move')
             e.preventDefault()
             if (this.isMouseDown) {
@@ -77,46 +65,42 @@ class ScrollBar {
                 console.log({ y2, y1 })
                 const delta = y2 - y1
                 this.scrollThumb.style.top = `${y2}px`
-                this.setContentScrollTop(delta * 3)
+                this.setContentScrollTop(delta)
             }
-        })
+        }
+        //for mouse Events
+        this.scrollTrack.addEventListener('mousedown',handleMouseDown)
 
-        //for pointer Events
-        this.scrollTrack.addEventListener('pointerdown', (e) => {
-            e.preventDefault()
-            this.isMouseDown = true
-            y1 = e.pageY - this.scrollTrack.offsetTop
-            // console.log('down')
-        })
-
-        this.scrollTrack.addEventListener( 'pointerleave', () => {
+        this.scrollTrack.addEventListener('mouseleave' , () => {
             // console.log('leave')
             this.isMouseDown = false
         })
-        this.scrollTrack.addEventListener('pointerup', () => {
+        
+        this.scrollTrack.addEventListener('mouseup', () => {
             // console.log('up')
             this.isMouseDown = false
         })
 
-        this.scrollTrack.addEventListener( 'pointermove', (e) => {
-            // console.log('move')
-            e.preventDefault()
-            if (this.isMouseDown) {
-                y2 = e.pageY - this.scrollTrack.offsetTop
-                // console.log({ y2, y1 })
-                const delta = y2 - y1
-                this.scrollThumb.style.top = `${y2}px`
-                this.setContentScrollTop(delta * 3)
-            }
+        this.scrollTrack.addEventListener('mousemove' , handleMouseMove)
+
+        //for pointer Events
+        this.scrollTrack.addEventListener('pointerdown', handleMouseDown)
+
+        this.scrollTrack.addEventListener( 'pointerleave', () => {
+            this.isMouseDown = false
         })
+        this.scrollTrack.addEventListener('pointerup', () => {
+            this.isMouseDown = false
+        })
+
+        this.scrollTrack.addEventListener( 'pointermove', handleMouseMove)
     }
 
     init() {
 
-        // console.log('height', this.scrollTrack.clientHeight)
-        this.downArrow.addEventListener('click', () => this.handleButtonAction(+200))
+        this.downArrow.addEventListener('click', () => this.handleButtonAction(+(0.8*this.content.clientHeight)))
 
-        this.upArrow.addEventListener('click', () => this.handleButtonAction(-200))
+        this.upArrow.addEventListener('click', () => this.handleButtonAction(-(0.8*this.content.clientHeight)))
 
         this.setThumbPosition(this.scrollPos)
 
